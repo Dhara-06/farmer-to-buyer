@@ -12,6 +12,7 @@ function AdminLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    
 
     // Simulate API login
     setTimeout(() => {
