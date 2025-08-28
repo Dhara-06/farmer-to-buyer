@@ -1,0 +1,11 @@
+/* Show dropdown on hover */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0; /* remove gap so it feels smooth */
+}
+
+/* Optional: Change background on hover */
+.dropdown-menu .dropdown-item:hover {
+  background-color: #198754; /* Bootstrap success green */
+  color: #fff;
+}
