@@ -1,3 +1,4 @@
+// src/pages/BuyerLogin.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -35,42 +36,74 @@ function BuyerLogin() {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center text-primary mb-4">🛒 Buyer Login</h2>
-      <form onSubmit={handleSubmit} className="w-50 mx-auto shadow p-4 rounded bg-light">
+    <div className="container my-5">
+      <h2 className="text-center text-success mb-4 fw-bold">
+        <i className="fas fa-shopping-cart me-2"></i> Buyer Login
+      </h2>
+
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto shadow p-4 rounded bg-light"
+        style={{ maxWidth: "400px" }}
+      >
         <div className="mb-3">
-          <label className="form-label">Email:</label>
+          <label className="form-label fw-semibold text-success">
+            <i className="fas fa-envelope me-2"></i>Email:
+          </label>
           <input
             type="email"
-            className="form-control"
+            className="form-control rounded"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
+            required
           />
         </div>
+
         <div className="mb-3">
-          <label className="form-label">Password:</label>
+          <label className="form-label fw-semibold text-success">
+            <i className="fas fa-lock me-2"></i>Password:
+          </label>
           <input
             type="password"
-            className="form-control"
+            className="form-control rounded"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
+            required
           />
         </div>
-        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+
+        <button
+          type="submit"
+          className="btn btn-success w-100 py-2 rounded shadow-sm"
+          disabled={loading}
+        >
           {loading ? (
             <>
-              <span className="spinner-border spinner-border-sm me-2"></span>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
               Logging in...
             </>
           ) : (
-            "Login"
+            <>
+              <i className="fas fa-sign-in-alt me-2"></i> Login
+            </>
           )}
         </button>
       </form>
-      {error && <div className="alert alert-danger text-center mt-3">{error}</div>}
-      {success && <div className="alert alert-success text-center mt-3">✅ Login successful! Redirecting...</div>}
+
+      {error && (
+        <div className="alert alert-danger text-center mt-3">{error}</div>
+      )}
+      {success && (
+        <div className="alert alert-success text-center mt-3">
+          <i className="fas fa-check-circle me-2"></i> Login successful! Redirecting...
+        </div>
+      )}
     </div>
   );
 }

@@ -7,84 +7,104 @@ function AdminLogin() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    
+    setError("");
 
-    // Simulate API login
+    if (!email || !password) {
+      setError("❌ Please enter both email and password.");
+      return;
+    }
+
+    setLoading(true);
+
     setTimeout(() => {
       setLoading(false);
-      setSuccess(true);
 
-      // After showing success, redirect to Admin.js page
-      setTimeout(() => {
-        navigate("/admin"); // ✅ Redirect to Admin.js
-      }, 1500);
+      // Example check: replace with real API call
+      if (email === "admin@test.com" && password === "1234") {
+        setSuccess(true);
+        setTimeout(() => {
+          navigate("/admin");
+        }, 1500);
+      } else {
+        setError("❌ Invalid email or password.");
+      }
     }, 2000);
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card shadow p-4">
-            <h3 className="text-center mb-4">👨‍💼 Admin Login</h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter admin email"
-                  required
-                />
-              </div>
+    <div className="container my-5">
+      <h2 className="text-center text-success mb-4 fw-bold">
+        <i className="fas fa-user-shield me-2"></i> Admin Login
+      </h2>
 
-              <div className="mb-3">
-                <label className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn-success w-100"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    Logging in...
-                  </>
-                ) : (
-                  "Login"
-                )}
-              </button>
-            </form>
-
-            {success && (
-              <div className="alert alert-success mt-3 text-center">
-                ✅ Login Successful! Redirecting...
-              </div>
-            )}
-          </div>
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto shadow p-4 rounded bg-light"
+        style={{ maxWidth: "400px" }}
+      >
+        <div className="mb-3">
+          <label className="form-label fw-semibold text-success">
+            <i className="fas fa-envelope me-2"></i>Email:
+          </label>
+          <input
+            type="email"
+            className="form-control rounded"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your admin email"
+            required
+          />
         </div>
-      </div>
+
+        <div className="mb-3">
+          <label className="form-label fw-semibold text-success">
+            <i className="fas fa-lock me-2"></i>Password:
+          </label>
+          <input
+            type="password"
+            className="form-control rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="btn btn-success w-100 py-2 rounded shadow-sm"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Logging in...
+            </>
+          ) : (
+            <>
+              <i className="fas fa-sign-in-alt me-2"></i> Login
+            </>
+          )}
+        </button>
+      </form>
+
+      {error && (
+        <div className="alert alert-danger text-center mt-3">{error}</div>
+      )}
+      {success && (
+        <div className="alert alert-success text-center mt-3">
+          <i className="fas fa-check-circle me-2"></i> Login successful! Redirecting...
+        </div>
+      )}
     </div>
   );
 }
