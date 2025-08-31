@@ -8,3 +8,8 @@
   background-color: #198754; /* Bootstrap success green */
   color: #fff;
 }
+
+.dropdown-menu {
+  display: block !important;
+  position: absolute !important;
+}
