@@ -1,5 +1,5 @@
-// src/pages/Farmers.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import API from "../api";
 
 function Farmers() {
   const [crops, setCrops] = useState([]);
@@ -7,17 +7,48 @@ function Farmers() {
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
 
-  const handleAddCrop = (e) => {
+  // Fetch crops from backend if available
+  useEffect(() => {
+    const fetchCrops = async () => {
+      try {
+        const { data } = await API.get("/farmers/crops");
+        setCrops(data);
+      } catch (err) {
+        console.error("Backend not available, using local state.", err);
+        setCrops([]);
+      }
+    };
+    fetchCrops();
+  }, []);
+
+  // Add new crop
+  const handleAddCrop = async (e) => {
     e.preventDefault();
     if (!cropName || !quantity || !price) return;
-    setCrops([...crops, { cropName, quantity, price }]);
+
+    try {
+      const { data } = await API.post("/farmers/crops", { cropName, quantity, price });
+      setCrops([...crops, data]);
+    } catch (err) {
+      console.warn("Backend not available, adding locally.", err);
+      // fallback to local state
+      setCrops([...crops, { _id: Date.now(), cropName, quantity, price }]);
+    }
+
     setCropName("");
     setQuantity("");
     setPrice("");
   };
 
-  const handleDelete = (index) => {
-    setCrops(crops.filter((_, i) => i !== index));
+  // Delete crop
+  const handleDelete = async (id) => {
+    try {
+      await API.delete(`/farmers/crops/${id}`);
+      setCrops(crops.filter(c => c._id !== id));
+    } catch (err) {
+      console.warn("Backend not available, deleting locally.", err);
+      setCrops(crops.filter(c => c._id !== id));
+    }
   };
 
   return (
@@ -26,6 +57,7 @@ function Farmers() {
         <i className="fas fa-tractor me-2"></i> Farmer Dashboard
       </h2>
 
+      {/* Add Crop Form */}
       <form
         onSubmit={handleAddCrop}
         className="row g-3 shadow p-4 rounded bg-light mb-5"
@@ -71,15 +103,13 @@ function Farmers() {
         </div>
 
         <div className="col-12 text-end">
-          <button
-            type="submit"
-            className="btn btn-success rounded shadow-sm"
-          >
+          <button type="submit" className="btn btn-success rounded shadow-sm">
             <i className="fas fa-plus-circle me-2"></i> Add Crop
           </button>
         </div>
       </form>
 
+      {/* Crops Table */}
       <h4 className="text-success fw-semibold mb-3">My Listings</h4>
       <div className="table-responsive shadow rounded">
         <table className="table table-bordered mb-0">
@@ -99,9 +129,9 @@ function Farmers() {
                 </td>
               </tr>
             )}
-            {crops.map((crop, index) => (
+            {crops.map((crop) => (
               <tr
-                key={index}
+                key={crop._id}
                 className="align-middle"
                 style={{ transition: "background-color 0.3s" }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#d4edda")}
@@ -111,15 +141,12 @@ function Farmers() {
                 <td>{crop.quantity} kg</td>
                 <td>₹{crop.price}</td>
                 <td>
-                  <button
-                    className="btn btn-warning btn-sm me-2"
-                    title="Edit"
-                  >
+                  <button className="btn btn-warning btn-sm me-2" title="Edit">
                     <i className="fas fa-edit"></i>
                   </button>
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(crop._id)}
                     title="Delete"
                   >
                     <i className="fas fa-trash"></i>

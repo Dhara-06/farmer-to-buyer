@@ -1,6 +1,7 @@
 // src/pages/BuyerRegister.js
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import API from "../api";
 
 function BuyerRegister() {
   const [name, setName] = useState("");
@@ -11,29 +12,30 @@ function BuyerRegister() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess(false);
 
     if (!name || !email || !password) {
       setError("❌ All fields are required.");
       return;
     }
 
-    setLoading(true);
+    try {
+      setLoading(true);
+      const { data } = await API.post("/buyers/register", { name, email, password });
+      localStorage.setItem("token", data.token);
+      setSuccess(true);
 
-    setTimeout(() => {
+      setTimeout(() => {
+        navigate("/buyers");
+      }, 1500);
+    } catch (err) {
+      setError(err.response?.data?.message || "❌ Registration failed.");
+    } finally {
       setLoading(false);
-
-      if (email.includes("@")) {
-        setSuccess(true);
-        setTimeout(() => {
-          navigate("/buyers");
-        }, 1500);
-      } else {
-        setError("❌ Please enter a valid email.");
-      }
-    }, 2000);
+    }
   };
 
   return (
@@ -110,12 +112,14 @@ function BuyerRegister() {
           )}
         </button>
 
-        <small className="d-block text-center mt-3">
-          Already have an account?{" "}
-          <Link to="/buyer/login" className="text-success fw-bold">
-            <i className="fas fa-sign-in-alt me-1"></i>Login here
-          </Link>
-        </small>
+        <div className="text-center mt-3">
+          <small>
+            Already have an account?{" "}
+            <Link to="/buyer/login" className="text-success fw-bold">
+              <i className="fas fa-sign-in-alt me-1"></i> Login here
+            </Link>
+          </small>
+        </div>
       </form>
 
       {error && (

@@ -1,6 +1,7 @@
 // src/pages/FarmerLogin.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../api";
 
 function FarmerLogin() {
   const [email, setEmail] = useState("");
@@ -10,30 +11,30 @@ function FarmerLogin() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess(false);
 
     if (!email || !password) {
       setError("❌ Please enter both email and password.");
       return;
     }
 
-    setLoading(true);
+    try {
+      setLoading(true);
+      const { data } = await API.post("/farmers/login", { email, password });
+      localStorage.setItem("token", data.token);
+      setSuccess(true);
 
-    setTimeout(() => {
+      setTimeout(() => {
+        navigate("/farmers");
+      }, 1500);
+    } catch (err) {
+      setError(err.response?.data?.message || "❌ Invalid email or password.");
+    } finally {
       setLoading(false);
-
-      // Example validation (replace with real API)
-      if (email === "farmer@test.com" && password === "1234") {
-        setSuccess(true);
-        setTimeout(() => {
-          navigate("/farmers");
-        }, 1500);
-      } else {
-        setError("❌ Invalid email or password.");
-      }
-    }, 2000);
+    }
   };
 
   return (
