@@ -14,4 +14,15 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+// ✅ Smart pricing suggest API
+export const suggestPrice = async (cropName, location, quantity) => {
+  const { data } = await API.post("/pricing/suggest", {
+    cropName,
+    location,
+    quantity,
+  });
+  // backend returns: { basePrice, suggestedPrice, method, breakdown }
+  return data;
+};
+
 export default API;

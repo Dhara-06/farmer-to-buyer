@@ -59,3 +59,24 @@ export const deleteCropAdmin = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const registerAdmin = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) return res.status(400).json({ message: "All fields required" });
+
+    const existing = await Admin.findOne({ email });
+    if (existing) return res.status(400).json({ message: "Email already exists" });
+
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(password, salt);
+
+    const admin = await Admin.create({ name, email, password: hashed });
+    const token = jwt.sign({ id: admin._id, role: "admin" }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
+    res.status(201).json({ token, admin });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+

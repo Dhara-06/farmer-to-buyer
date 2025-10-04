@@ -7,6 +7,7 @@ import farmersRoutes from "./routes/farmers.js";
 import buyersRoutes from "./routes/buyers.js";
 import adminRoutes from "./routes/admin.js";
 import seedAdmin from "./utils/seedAdmin.js";
+import pricingRoutes from "./routes/pricing.js";
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use("/api/farmers", farmersRoutes);
 app.use("/api/buyers", buyersRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/pricing", pricingRoutes);
 
 // health
 app.get("/api", (req, res) => res.send("SmartAgri API is running"));

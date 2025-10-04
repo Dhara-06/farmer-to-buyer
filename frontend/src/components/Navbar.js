@@ -62,19 +62,24 @@ function AppNavbar() {
             </NavDropdown>
 
             {/* Admin Dropdown */}
-            <NavDropdown
-              title={<><i className="fas fa-user-shield"></i> Admin</>}
-              id="admin-dropdown"
-              show={showAdmin}
-              onToggle={(isOpen) => {
-                closeAll();
-                setShowAdmin(isOpen);
-              }}
-            >
-              <NavDropdown.Item as={Link} to="/admin/login" onClick={closeAll}>
-                Login
-              </NavDropdown.Item>
-            </NavDropdown>
+            {/* Admin Dropdown */}
+<NavDropdown
+  title={<><i className="fas fa-user-shield"></i> Admin</>}
+  id="admin-dropdown"
+  show={showAdmin}
+  onToggle={(isOpen) => {
+    closeAll();
+    setShowAdmin(isOpen);
+  }}
+>
+  <NavDropdown.Item as={Link} to="/admin/register" onClick={closeAll}>
+    Register
+  </NavDropdown.Item>
+  <NavDropdown.Item as={Link} to="/admin/login" onClick={closeAll}>
+    Login
+  </NavDropdown.Item>
+</NavDropdown>
+
 
             {/* Blog */}
             <Nav.Link as={Link} to="/blog" onClick={closeAll}>
